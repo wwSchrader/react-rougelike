@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import classNames from 'classnames';
 
 class App extends Component {
   constructor(props) {
@@ -43,17 +44,14 @@ class App extends Component {
   render() {
     var dungeonMap = this.state.dungeon.map((row, rowIndex) => {
       var dungeonRow = row.map((column, columnIndex) => {
-        return (<td key={rowIndex + columnIndex} className={column}>e</td>);
+        var tileClass = classNames('tile', column);
+        return (<span key={rowIndex + columnIndex} className={tileClass}></span>);
       });
-      return (<tr key={'row' + rowIndex}>{dungeonRow}</tr>);
+      return (<div className="dungeonRow" key={'row' + rowIndex}>{dungeonRow}</div>);
     });
     return (
       <div className="App">
-        <table>
-          <tbody>
-            {dungeonMap}
-          </tbody>
-        </table>
+        {dungeonMap}
       </div>
     );
   }
