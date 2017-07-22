@@ -30,8 +30,7 @@ class App extends Component {
         experience: 0,
         row: this.playerRow,
         column: this.playerColumn
-      },
-      keyPress: ''
+      }
     };
 
     this.onKeyIsPressed = this.onKeyIsPressed.bind(this);
