@@ -46,7 +46,17 @@ class App extends Component {
 
     dungeon = this.generateMonsters(5, dungeon);
 
-    console.log(this.monsterStats);
+    dungeon = this.spawnPlayer(dungeon);
+
+    return dungeon;
+  }
+
+  spawnPlayer(dungeon) {
+    let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+    let selectFloorTile = this.floorArray.splice(randomIndex, 1);
+
+    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "player";
+
     return dungeon;
   }
 
