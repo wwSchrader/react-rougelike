@@ -19,9 +19,22 @@ class App extends Component {
     this.floorArray = [];
     this.monsterStats = {};
 
+    this.playerRow = 0;
+    this.playerColumn = 0;
+
     this.state = {
-      dungeon: this.dungeonGenerator()
+      dungeon: this.dungeonGenerator(),
+      player: {
+        health: 100,
+        weapon: 10,
+        experience: 0,
+        row: this.playerRow,
+        column: this.playerColumn
+      },
+      keyPress: ''
     };
+
+    this.onKeyIsPressed = this.onKeyIsPressed.bind(this);
   }
 
   dungeonGenerator() {
@@ -56,6 +69,10 @@ class App extends Component {
     let selectFloorTile = this.floorArray.splice(randomIndex, 1);
 
     dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "player";
+
+    //set player position in state
+    this.playerRow = selectFloorTile[0].row;
+    this.playerColumn = selectFloorTile[0].column;
 
     return dungeon;
   }
@@ -191,6 +208,61 @@ class App extends Component {
     }
 
     return dungeon;
+  }
+
+  componentWillMount() {
+    document.addEventListener("keydown", this.onKeyIsPressed, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyIsPressed, false);
+  }
+
+  onKeyIsPressed(e) {
+    var keyPress = e.key;
+    var gameState = Object.assign({}, this.state);
+
+    var rowToMoveTo = gameState.player.row;
+    var columnToMoveTo = gameState.player.column;
+
+    //changes the tile coordinates to move to based on keypress
+    switch(keyPress) {
+      case('ArrowUp'):
+        rowToMoveTo--;
+        break;
+      case('ArrowDown'):
+        rowToMoveTo++;
+        break;
+      case('ArrowLeft'):
+        columnToMoveTo--;
+        break;
+      case('ArrowRight'):
+        columnToMoveTo++;
+        break;
+      default:
+        //end method if any other key is pressed
+        return;
+    }
+
+    switch(gameState.dungeon[rowToMoveTo][columnToMoveTo]) {
+      case 'floor':
+        //turn the current tile player is on into floor
+        gameState.dungeon[gameState.player.row][gameState.player.column] = 'floor';
+        //turn new tile into a player tile
+        gameState.dungeon[rowToMoveTo][columnToMoveTo] = 'player';
+        //update player coordinates
+        gameState.player.row = rowToMoveTo;
+        gameState.player.column = columnToMoveTo;
+        break;
+      case 'wall':
+      case 'monster':
+      case 'health':
+      default:
+        return;
+    }
+
+    this.setState(gameState);
+
   }
 
   render() {
