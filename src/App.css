@@ -5,9 +5,13 @@
 
 }
 
+.wall {
+  background-color: grey;
+}
+
 .tile {
-  height: 15px;
-  width: 15px;
+  height: 7px;
+  width: 7px;
   padding: 0px;
   margin: 0px;
   border-width: 0px;
