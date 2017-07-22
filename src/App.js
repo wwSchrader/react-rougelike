@@ -35,7 +35,9 @@ class App extends Component {
     //create first room at the center of map
     dungeon = this.createRoom(50, 50, dungeon);
 
-    dungeon = this.randomlyGenerateRoom(dungeon);
+    for (let i = 0; i < 80; i++) {
+      dungeon = this.randomlyGenerateRoom(dungeon);
+    }
 
     return dungeon;
   }
@@ -47,50 +49,54 @@ class App extends Component {
       //pick a random segment of wall
       var selectedWall = this.wallArray[this.getRandomInt(0, this.wallArray.length - 1)];
       console.log(selectedWall);
-      //check for adjacent floor for a floor tile then determine upper left hand corner of potential room area
-      if (dungeon[selectedWall.row][selectedWall.column - 1] === 'floor') {
-        console.log("Check left");
-        console.log(dungeon[selectedWall.row][selectedWall.column - 1]);
-        rowOffset = selectedWall.row - (this.smallRoom.height / 2);
-        columnOffset = selectedWall.column + 1;
-        //check
-        if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-          console.log('candidate!');
-          return this.createRoom(rowOffset, columnOffset, dungeon);
-        }
+      try {
+        //check for adjacent floor for a floor tile then determine upper left hand corner of potential room area
+        if (dungeon[selectedWall.row][selectedWall.column - 1] === 'floor') {
+          console.log("Check left");
+          console.log(dungeon[selectedWall.row][selectedWall.column - 1]);
+          rowOffset = selectedWall.row - (this.smallRoom.height / 2);
+          columnOffset = selectedWall.column + 1;
+          //check
+          if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
+            console.log('candidate!');
+            return this.createRoom(rowOffset, columnOffset, dungeon);
+          }
 
-      } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
-        console.log("Check right");
-        console.log(dungeon[selectedWall.row][selectedWall.column + 1]);
-        rowOffset = selectedWall.row - (this.smallRoom.height / 2);
-        columnOffset = selectedWall.column - (this.smallRoom.width);
-        //check
-        if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-          console.log('candidate!');
-          return this.createRoom(rowOffset, columnOffset, dungeon);
-        }
-      } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
-        console.log("Check up");
-        rowOffset = selectedWall.row + 1;
-        columnOffset = selectedWall.column - (this.smallRoom.width / 2);
-        //check
-        if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-          console.log('candidate!');
-          return this.createRoom(rowOffset, columnOffset, dungeon);
-        }
+        } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
+          console.log("Check right");
+          console.log(dungeon[selectedWall.row][selectedWall.column + 1]);
+          rowOffset = selectedWall.row - (this.smallRoom.height / 2);
+          columnOffset = selectedWall.column - (this.smallRoom.width);
+          //check
+          if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
+            console.log('candidate!');
+            return this.createRoom(rowOffset, columnOffset, dungeon);
+          }
+        } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
+          console.log("Check up");
+          rowOffset = selectedWall.row + 1;
+          columnOffset = selectedWall.column - (this.smallRoom.width / 2);
+          //check
+          if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
+            console.log('candidate!');
+            return this.createRoom(rowOffset, columnOffset, dungeon);
+          }
 
-      } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
-        console.log("Check down");
-        rowOffset = selectedWall.row - this.smallRoom.height;
-        columnOffset = selectedWall.column - (this.smallRoom.width / 2);
-        //check
-        if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-          console.log('candidate!');
-          return this.createRoom(rowOffset, columnOffset, dungeon);
-        }
+        } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
+          console.log("Check down");
+          rowOffset = selectedWall.row - this.smallRoom.height;
+          columnOffset = selectedWall.column - (this.smallRoom.width / 2);
+          //check
+          if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
+            console.log('candidate!');
+            return this.createRoom(rowOffset, columnOffset, dungeon);
+          }
 
-      } else {
-        console.log('Try again!');
+        } else {
+          console.log('Try again!');
+        }
+      } catch (e) {
+        console.log('Hit edge of map');
       }
     }
   }
@@ -98,7 +104,11 @@ class App extends Component {
   roomForFloorSpace(dungeon, startingRow, startingColumn) {
     for (var k = 0; k < this.smallRoom.height; k++){
       for (var l = 0; l < this.smallRoom.width; l++) {
-        if(dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+        try {
+          if(dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+           return false;
+          }
+        } catch (e) {
           return false;
         }
       }
