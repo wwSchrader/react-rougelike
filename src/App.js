@@ -16,6 +16,7 @@ class App extends Component {
 
     //array that holds all of the coordinates to the walls
     this.wallArray = [];
+    this.floorArray = [];
 
     this.state = {
       dungeon: this.dungeonGenerator()
@@ -35,10 +36,24 @@ class App extends Component {
     //create first room at the center of map
     dungeon = this.createRoom(50, 50, dungeon, null);
 
+    //randomly create another set of rooms
     for (let i = 0; i < 20; i++) {
       dungeon = this.randomlyGenerateRoom(dungeon);
     }
 
+    dungeon = this.generateHealthPacks(10, dungeon);
+
+
+    return dungeon;
+  }
+
+  generateHealthPacks(numberOfHealthPacks, dungeon) {
+    for (let i = 0; i < numberOfHealthPacks; i++) {
+      let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+      //remove floor tile from floorArray to remove from future consideration for placement
+      let selectFloorTile = this.floorArray.splice(randomIndex, 1);
+      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "health";
+    }
     return dungeon;
   }
 
@@ -137,6 +152,10 @@ class App extends Component {
 
         } else {
           dungeon[k + startingTileRow][l + startingTileColumn] = 'floor';
+          this.floorArray.push({
+            row: k + startingTileRow,
+            column: l + startingTileColumn
+          });
         }
       }
     }

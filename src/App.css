@@ -9,6 +9,10 @@
   background-color: grey;
 }
 
+.health {
+  background-color: green;
+}
+
 .tile {
   height: 7px;
   width: 7px;
