@@ -13,6 +13,10 @@
   background-color: green;
 }
 
+.monster {
+  background-color: red;
+}
+
 .tile {
   height: 7px;
   width: 7px;

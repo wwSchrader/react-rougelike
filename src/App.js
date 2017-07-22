@@ -17,6 +17,7 @@ class App extends Component {
     //array that holds all of the coordinates to the walls
     this.wallArray = [];
     this.floorArray = [];
+    this.monsterStats = {};
 
     this.state = {
       dungeon: this.dungeonGenerator()
@@ -43,7 +44,22 @@ class App extends Component {
 
     dungeon = this.generateHealthPacks(10, dungeon);
 
+    dungeon = this.generateMonsters(5, dungeon);
 
+    console.log(this.monsterStats);
+    return dungeon;
+  }
+
+  generateMonsters(numberOfMonsters, dungeon) {
+    for (let i = 0; i < numberOfMonsters; i++) {
+      let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+      //remove floor tile from floorArray to remove from future consideration for placement
+      let selectFloorTile = this.floorArray.splice(randomIndex, 1);
+      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "monster";
+      this.monsterStats[selectFloorTile[0].row + " " + selectFloorTile[0].column] = {
+        health: 100
+      };
+    }
     return dungeon;
   }
 
