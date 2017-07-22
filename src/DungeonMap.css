@@ -1,0 +1,39 @@
+.earth {
+  background-color: brown;
+
+}
+
+.wall {
+  background-color: grey;
+}
+
+.health {
+  background-color: green;
+}
+
+.monster {
+  background-color: red;
+}
+
+.player {
+  background-color: blue;
+}
+
+.tile {
+  height: 7px;
+  width: 7px;
+  padding: 0px;
+  margin: 0px;
+  border-width: 0px;
+  display: inline-block;
+  font-size: 0;
+}
+
+.dungeonRow {
+  padding: 0px;
+  margin: 0px;
+  border-width: 0px;
+  white-space: nowrap;
+  font-size: 0;
+  float: left;
+}
