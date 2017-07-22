@@ -33,9 +33,9 @@ class App extends Component {
     }
 
     //create first room at the center of map
-    dungeon = this.createRoom(50, 50, dungeon);
+    dungeon = this.createRoom(50, 50, dungeon, null);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 20; i++) {
       dungeon = this.randomlyGenerateRoom(dungeon);
     }
 
@@ -55,7 +55,7 @@ class App extends Component {
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column;
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            return this.createRoom(rowOffset, columnOffset, dungeon);
+            return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
 
         } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
@@ -63,14 +63,14 @@ class App extends Component {
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column - (this.smallRoom.width) + 1;
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            return this.createRoom(rowOffset, columnOffset, dungeon);
+            return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
         } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
           //check up a tile for a floor space
           rowOffset = selectedWall.row;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            return this.createRoom(rowOffset, columnOffset, dungeon);
+            return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
 
         } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
@@ -78,7 +78,7 @@ class App extends Component {
           rowOffset = selectedWall.row - this.smallRoom.height + 1;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            return this.createRoom(rowOffset, columnOffset, dungeon);
+            return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
 
         } else {
@@ -118,23 +118,31 @@ class App extends Component {
     return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive
   }
 
-  createRoom(startingTileRow, startingTileColumn, dungeon) {
+  createRoom(startingTileRow, startingTileColumn, dungeon, doorTile) {
     //starting tile column and row always starts in top left corner
 
     for (var k = 0; k < this.smallRoom.height; k++){
       for (var l = 0; l < this.smallRoom.width; l++) {
         //add wall class to edges
         if ((k === 0) || (k === this.smallRoom.height - 1) || (l === 0) || (l === this.smallRoom.width - 1)) {
-          dungeon[k + startingTileRow][l +  startingTileColumn] = 'wall';
-          //add wall cordinates to array to for choosing next placement of room
-          this.wallArray.push({
-            row: k + startingTileRow,
-            column: l + startingTileColumn
-          });
+          //if the tile is already a wall, ignore so it won't add duplicates to the wallArray
+          if (dungeon[k + startingTileRow][l +  startingTileColumn] !== 'wall') {
+            dungeon[k + startingTileRow][l +  startingTileColumn] = 'wall';
+            //add wall cordinates to array to for choosing next placement of room
+            this.wallArray.push({
+              row: k + startingTileRow,
+              column: l + startingTileColumn
+            });
+          }
+
         } else {
           dungeon[k + startingTileRow][l + startingTileColumn] = 'floor';
         }
       }
+    }
+
+    if (doorTile !== null) {
+      dungeon[doorTile.row][doorTile.column] = 'floor';
     }
 
     return dungeon;
