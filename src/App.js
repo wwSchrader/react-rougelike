@@ -6,6 +6,13 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.earthTile = 'earth';
+    this.wallTile = 'wall';
+    this.floorTile = 'floor';
+    this.playerTile = 'player';
+    this.healthTile = 'health';
+    this.monsterTile = 'monster';
+
     this.dungeonHeight = 100;
     this.dungeonWidth = 100;
 
@@ -42,7 +49,7 @@ class App extends Component {
     for (var i = 0; i < this.dungeonHeight;) {
       dungeon[i++] = new Array(this.dungeonWidth);
       for(var j = 0; j < this.dungeonWidth;) {
-        dungeon[i - 1][j++] = 'earth';
+        dungeon[i - 1][j++] = this.earthTile;
       }
     }
 
@@ -67,7 +74,7 @@ class App extends Component {
     let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
     let selectFloorTile = this.floorArray.splice(randomIndex, 1);
 
-    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "player";
+    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.playerTile;
 
     //set player position in state
     this.playerRow = selectFloorTile[0].row;
@@ -81,7 +88,7 @@ class App extends Component {
       let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
       //remove floor tile from floorArray to remove from future consideration for placement
       let selectFloorTile = this.floorArray.splice(randomIndex, 1);
-      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "monster";
+      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.monsterTile;
       this.monsterStats[selectFloorTile[0].row + " " + selectFloorTile[0].column] = {
         health: 100
       };
@@ -94,7 +101,7 @@ class App extends Component {
       let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
       //remove floor tile from floorArray to remove from future consideration for placement
       let selectFloorTile = this.floorArray.splice(randomIndex, 1);
-      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = "health";
+      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.healthTile;
     }
     return dungeon;
   }
@@ -107,7 +114,7 @@ class App extends Component {
       var selectedWall = this.wallArray[this.getRandomInt(0, this.wallArray.length - 1)];
       try {
         //check for adjacent floor for a floor tile then determine upper left hand corner of potential room area
-        if (dungeon[selectedWall.row][selectedWall.column - 1] === 'floor') {
+        if (dungeon[selectedWall.row][selectedWall.column - 1] === this.floorTile) {
           //check to the left of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column;
@@ -115,14 +122,14 @@ class App extends Component {
             return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
 
-        } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
+        } else if (dungeon[selectedWall.row][selectedWall.column + 1] === this.floorTile) {
           //to the right of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column - (this.smallRoom.width) + 1;
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
             return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
-        } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
+        } else if (dungeon[selectedWall.row - 1][selectedWall.column] === this.floorTile) {
           //check up a tile for a floor space
           rowOffset = selectedWall.row;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
@@ -130,7 +137,7 @@ class App extends Component {
             return this.createRoom(rowOffset, columnOffset, dungeon, selectedWall);
           }
 
-        } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
+        } else if (dungeon[selectedWall.row + 1][selectedWall.column] === this.floorTile) {
           //check down a tile for a floor space
           rowOffset = selectedWall.row - this.smallRoom.height + 1;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
@@ -152,12 +159,12 @@ class App extends Component {
       for (var l = 0; l < this.smallRoom.width; l++) {
         try {
           if ((k === 0) || (k === this.smallRoom.height - 1) || (l === 0) || (l === this.smallRoom.width - 1)) {
-            if (dungeon[startingRow + k][startingColumn + l] !== 'wall' && dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+            if (dungeon[startingRow + k][startingColumn + l] !== this.wallTile && dungeon[startingRow + k][startingColumn + l] !== this.earthTile) {
               //ignore the edge of the proposed room since we can reuse existing walls
               //but will create an error is trying to reference a room
               return false;
             }
-          } else if(dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+          } else if(dungeon[startingRow + k][startingColumn + l] !== this.earthTile) {
            return false;
           }
         } catch (e) {
@@ -183,8 +190,8 @@ class App extends Component {
         //add wall class to edges
         if ((k === 0) || (k === this.smallRoom.height - 1) || (l === 0) || (l === this.smallRoom.width - 1)) {
           //if the tile is already a wall, ignore so it won't add duplicates to the wallArray
-          if (dungeon[k + startingTileRow][l +  startingTileColumn] !== 'wall') {
-            dungeon[k + startingTileRow][l +  startingTileColumn] = 'wall';
+          if (dungeon[k + startingTileRow][l +  startingTileColumn] !== this.wallTile) {
+            dungeon[k + startingTileRow][l +  startingTileColumn] = this.wallTile;
             //add wall cordinates to array to for choosing next placement of room
             this.wallArray.push({
               row: k + startingTileRow,
@@ -193,7 +200,7 @@ class App extends Component {
           }
 
         } else {
-          dungeon[k + startingTileRow][l + startingTileColumn] = 'floor';
+          dungeon[k + startingTileRow][l + startingTileColumn] = this.floorTile;
           this.floorArray.push({
             row: k + startingTileRow,
             column: l + startingTileColumn
@@ -203,7 +210,7 @@ class App extends Component {
     }
 
     if (doorTile !== null) {
-      dungeon[doorTile.row][doorTile.column] = 'floor';
+      dungeon[doorTile.row][doorTile.column] = this.floorTile;
     }
 
     return dungeon;
@@ -244,18 +251,18 @@ class App extends Component {
     }
 
     switch(gameState.dungeon[rowToMoveTo][columnToMoveTo]) {
-      case 'floor':
+      case this.floorTile:
         //turn the current tile player is on into floor
-        gameState.dungeon[gameState.player.row][gameState.player.column] = 'floor';
+        gameState.dungeon[gameState.player.row][gameState.player.column] = this.floorTile;
         //turn new tile into a player tile
-        gameState.dungeon[rowToMoveTo][columnToMoveTo] = 'player';
+        gameState.dungeon[rowToMoveTo][columnToMoveTo] = this.playerTile;
         //update player coordinates
         gameState.player.row = rowToMoveTo;
         gameState.player.column = columnToMoveTo;
         break;
-      case 'wall':
-      case 'monster':
-      case 'health':
+      case this.wallTile:
+      case this.monsterTile:
+      case this.healthTile:
       default:
         return;
     }
