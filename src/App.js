@@ -35,7 +35,7 @@ class App extends Component {
     //create first room at the center of map
     dungeon = this.createRoom(50, 50, dungeon);
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 5; i++) {
       dungeon = this.randomlyGenerateRoom(dungeon);
     }
 
@@ -51,23 +51,23 @@ class App extends Component {
       try {
         //check for adjacent floor for a floor tile then determine upper left hand corner of potential room area
         if (dungeon[selectedWall.row][selectedWall.column - 1] === 'floor') {
-          //check to the right of the tile for a floor space
+          //check to the left of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
-          columnOffset = selectedWall.column + 1;
+          columnOffset = selectedWall.column;
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
 
         } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
-          //to the left of the tile for a floor space
+          //to the right of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
-          columnOffset = selectedWall.column - (this.smallRoom.width);
+          columnOffset = selectedWall.column - (this.smallRoom.width) + 1;
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
         } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
           //check up a tile for a floor space
-          rowOffset = selectedWall.row + 1;
+          rowOffset = selectedWall.row;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
             return this.createRoom(rowOffset, columnOffset, dungeon);
@@ -75,7 +75,7 @@ class App extends Component {
 
         } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
           //check down a tile for a floor space
-          rowOffset = selectedWall.row - this.smallRoom.height;
+          rowOffset = selectedWall.row - this.smallRoom.height + 1;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
             return this.createRoom(rowOffset, columnOffset, dungeon);
@@ -94,7 +94,13 @@ class App extends Component {
     for (var k = 0; k < this.smallRoom.height; k++){
       for (var l = 0; l < this.smallRoom.width; l++) {
         try {
-          if(dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+          if ((k === 0) || (k === this.smallRoom.height - 1) || (l === 0) || (l === this.smallRoom.width - 1)) {
+            if (dungeon[startingRow + k][startingColumn + l] !== 'wall' && dungeon[startingRow + k][startingColumn + l] !== 'earth') {
+              //ignore the edge of the proposed room since we can reuse existing walls
+              //but will create an error is trying to reference a room
+              return false;
+            }
+          } else if(dungeon[startingRow + k][startingColumn + l] !== 'earth') {
            return false;
           }
         } catch (e) {
