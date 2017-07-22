@@ -48,55 +48,44 @@ class App extends Component {
       var columnOffset = 0;
       //pick a random segment of wall
       var selectedWall = this.wallArray[this.getRandomInt(0, this.wallArray.length - 1)];
-      console.log(selectedWall);
       try {
         //check for adjacent floor for a floor tile then determine upper left hand corner of potential room area
         if (dungeon[selectedWall.row][selectedWall.column - 1] === 'floor') {
-          console.log("Check left");
-          console.log(dungeon[selectedWall.row][selectedWall.column - 1]);
+          //check to the right of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column + 1;
-          //check
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            console.log('candidate!');
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
 
         } else if (dungeon[selectedWall.row][selectedWall.column + 1] === 'floor') {
-          console.log("Check right");
-          console.log(dungeon[selectedWall.row][selectedWall.column + 1]);
+          //to the left of the tile for a floor space
           rowOffset = selectedWall.row - (this.smallRoom.height / 2);
           columnOffset = selectedWall.column - (this.smallRoom.width);
-          //check
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            console.log('candidate!');
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
         } else if (dungeon[selectedWall.row - 1][selectedWall.column] === 'floor') {
-          console.log("Check up");
+          //check up a tile for a floor space
           rowOffset = selectedWall.row + 1;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
-          //check
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            console.log('candidate!');
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
 
         } else if (dungeon[selectedWall.row + 1][selectedWall.column] === 'floor') {
-          console.log("Check down");
+          //check down a tile for a floor space
           rowOffset = selectedWall.row - this.smallRoom.height;
           columnOffset = selectedWall.column - (this.smallRoom.width / 2);
-          //check
           if (this.roomForFloorSpace(dungeon, rowOffset, columnOffset)) {
-            console.log('candidate!');
             return this.createRoom(rowOffset, columnOffset, dungeon);
           }
 
         } else {
-          console.log('Try again!');
+          //No suitable place to put a room is found. So we'll try again!
         }
       } catch (e) {
-        console.log('Hit edge of map');
+        //Tried to check for a space off the map. We'll just pick another wall space.
       }
     }
   }
