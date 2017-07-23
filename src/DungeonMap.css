@@ -1,3 +1,5 @@
+
+
 .earth {
   background-color: brown;
 
@@ -31,6 +33,10 @@
   background-color: purple;
 }
 
+.dark {
+  background-color: black;
+}
+
 .tile {
   height: 7px;
   width: 7px;
@@ -40,6 +46,10 @@
   display: inline-block;
   font-size: 0;
 }
+
+
+
+
 
 .dungeonRow {
   padding: 0px;

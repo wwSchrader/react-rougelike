@@ -432,7 +432,7 @@ class App extends Component {
       <div className="App">
         <AlertMessage handleWinAlert={this.handleWinMessageDismiss} handleLossAlert={this.handleLossMessageDismiss} winMessageState={this.state.winMessageVisible} lossMessageState={this.state.lossMessageVisible} />
         <PlayerStats playerStats={this.state.player} />
-        <DungeonMap dungeonMap={this.state.dungeon} />
+        <DungeonMap dungeonMap={this.state.dungeon} playerRow={this.state.player.row} playerColumn={this.state.player.column} />
       </div>
     );
   }
