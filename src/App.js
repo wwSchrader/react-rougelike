@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import DungeonMap from './DungeonMap.js';
 import PlayerStats from './PlayerStats.js';
+import AlertMessage from './AlertMessage.js';
 
 class App extends Component {
   constructor(props) {
@@ -44,10 +45,14 @@ class App extends Component {
         row: this.playerRow,
         column: this.playerColumn,
         dungeonLevel: this.dungeonLevel
-      }
+      },
+      winMessageVisible: false,
+      lossMessageVisible: false
     };
 
     this.onKeyIsPressed = this.onKeyIsPressed.bind(this);
+    this.handleWinMessageDismiss = this.handleWinMessageDismiss.bind(this);
+    this.handleLossMessageDismiss = this.handleLossMessageDismiss.bind(this);
   }
 
   dungeonGenerator() {
@@ -372,6 +377,7 @@ class App extends Component {
           gameState.dungeon = this.dungeonGenerator();
           gameState.player.row = this.playerRow;
           gameState.player.column = this.playerColumn;
+          gameState.winMessageVisible = true;
           canPlayerMove = false;
         } else {
           canPlayerMove = false;
@@ -396,9 +402,22 @@ class App extends Component {
 
   }
 
+  handleWinMessageDismiss() {
+    this.setState({
+      winMessageVisible: false
+    });
+  }
+
+  handleLossMessageDismiss() {
+    this.setState({
+      lossMessageVisible: false
+    });
+  }
+
   render() {
     return (
       <div className="App">
+        <AlertMessage handleWinAlert={this.handleWinMessageDismiss} handleLossAlert={this.handleLossMessageDismiss} winMessageState={this.state.winMessageVisible} lossMessageState={this.state.lossMessageVisible} />
         <PlayerStats playerStats={this.state.player} />
         <DungeonMap dungeonMap={this.state.dungeon} />
       </div>
