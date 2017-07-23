@@ -265,7 +265,20 @@ class App extends Component {
         canPlayerMove = false;
         break;
       case this.monsterTile:
+        //player attacks monster and decreases it's health
+        this.monsterStats[rowToMoveTo + " " + columnToMoveTo].health -= gameState.player.weapon;
+        //monster attacks player
+        gameState.player.health -= 5;
+        //if monster health is less than or equal to zero, allow player to gain exp and move over it
+        if (this.monsterStats[rowToMoveTo + " " + columnToMoveTo].health <= 0) {
+          gameState.player.experience += 100;
+          canPlayerMove = true;
+        } else {
+          canPlayerMove = false;
+        }
+        break;
       default:
+        //if something else, do nothing
         return;
     }
 
