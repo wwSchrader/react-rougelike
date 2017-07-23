@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import DungeonMap from './DungeonMap.js';
+import PlayerStats from './PlayerStats.js';
 
 class App extends Component {
   constructor(props) {
@@ -13,8 +14,8 @@ class App extends Component {
     this.healthTile = 'health';
     this.monsterTile = 'monster';
 
-    this.dungeonHeight = 100;
-    this.dungeonWidth = 100;
+    this.dungeonHeight = 50;
+    this.dungeonWidth = 50;
 
     this.smallRoom = {
       height: 8,
@@ -54,7 +55,7 @@ class App extends Component {
     }
 
     //create first room at the center of map
-    dungeon = this.createRoom(50, 50, dungeon, null);
+    dungeon = this.createRoom(25, 25, dungeon, null);
 
     //randomly create another set of rooms
     for (let i = 0; i < 20; i++) {
@@ -274,6 +275,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <PlayerStats playerStats={this.state.player} />
         <DungeonMap dungeonMap={this.state.dungeon} />
       </div>
     );
