@@ -226,6 +226,7 @@ class App extends Component {
   }
 
   onKeyIsPressed(e) {
+    var canPlayerMove = false;
     var keyPress = e.key;
     var gameState = Object.assign({}, this.state);
 
@@ -252,20 +253,30 @@ class App extends Component {
     }
 
     switch(gameState.dungeon[rowToMoveTo][columnToMoveTo]) {
+      case this.healthTile:
+        //increase player health and then move
+        gameState.player.health += 20;
+        canPlayerMove = true;
+        break;
       case this.floorTile:
-        //turn the current tile player is on into floor
+        canPlayerMove = true;
+        break;
+      case this.wallTile:
+        canPlayerMove = false;
+        break;
+      case this.monsterTile:
+      default:
+        return;
+    }
+
+    if (canPlayerMove) {
+      //turn the current tile player is on into floor
         gameState.dungeon[gameState.player.row][gameState.player.column] = this.floorTile;
         //turn new tile into a player tile
         gameState.dungeon[rowToMoveTo][columnToMoveTo] = this.playerTile;
         //update player coordinates
         gameState.player.row = rowToMoveTo;
         gameState.player.column = columnToMoveTo;
-        break;
-      case this.wallTile:
-      case this.monsterTile:
-      case this.healthTile:
-      default:
-        return;
     }
 
     this.setState(gameState);
