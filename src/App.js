@@ -15,6 +15,7 @@ class App extends Component {
     this.monsterTile = 'monster';
     this.weaponTile = 'weapon';
     this.portalTile = 'portal';
+    this.bossTile = 'boss';
 
     this.dungeonHeight = 50;
     this.dungeonWidth = 50;
@@ -28,9 +29,11 @@ class App extends Component {
     this.wallArray = [];
     this.floorArray = [];
     this.monsterStats = {};
+    this.bossStats = {};
 
     this.playerRow = 0;
     this.playerColumn = 0;
+    this.dungeonLevel = 1;
 
     this.state = {
       dungeon: this.dungeonGenerator(),
@@ -40,7 +43,7 @@ class App extends Component {
         experience: 0,
         row: this.playerRow,
         column: this.playerColumn,
-        dungeonLevel: 1
+        dungeonLevel: this.dungeonLevel
       }
     };
 
@@ -73,16 +76,41 @@ class App extends Component {
 
     dungeon = this.spawnWeapon(dungeon);
 
-    dungeon = this.spawnPortal(dungeon);
+    dungeon = this.spawnPortalOrBoss(dungeon);
 
     return dungeon;
   }
 
-  spawnPortal(dungeon) {
+  spawnPortalOrBoss(dungeon) {
     let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
     let selectFloorTile = this.floorArray.splice(randomIndex, 1);
 
-    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.portalTile;
+    if (this.dungeonLevel === 2) {
+      while (true) {
+        //check adjacent tiles for space for the boss
+        if (dungeon[selectFloorTile[0].row + 1][selectFloorTile[0].column] === this.floorTile &&
+         dungeon[selectFloorTile[0].row][selectFloorTile[0].column + 1] === this.floorTile
+         && dungeon[selectFloorTile[0].row + 1][selectFloorTile[0].column + 1] === this.floorTile) {
+
+          dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.bossTile;
+          dungeon[selectFloorTile[0].row + 1][selectFloorTile[0].column] = this.bossTile;
+          dungeon[selectFloorTile[0].row][selectFloorTile[0].column + 1] = this.bossTile;
+          dungeon[selectFloorTile[0].row + 1][selectFloorTile[0].column + 1] = this.bossTile;
+
+          this.bossStats = {
+            health: this.dungeonLevel * 100,
+          }
+          break;
+        } else {
+          //if no space, pick another floor tile to evaluate
+          randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+          selectFloorTile = this.floorArray.splice(randomIndex, 1);
+        }
+      }
+    } else {
+      dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.portalTile;
+    }
+
     return dungeon;
   }
 
@@ -312,11 +340,42 @@ class App extends Component {
         this.floorArray = [];
         this.monsterStats = {};
 
+        gameState.player.dungeonLevel += 1;
+        this.dungeonLevel += 1;
         gameState.dungeon = this.dungeonGenerator();
         gameState.player.row = this.playerRow;
         gameState.player.column = this.playerColumn;
-        gameState.player.dungeonLevel += 1;
+
         canPlayerMove = false;
+        break;
+      case this.bossTile:
+        //player attacks monster and decreases it's health
+        this.bossStats.health -= gameState.player.weapon;
+        //monster attacks player with a dungeon level multiplier
+        gameState.player.health -= 5 * gameState.player.dungeonLevel;
+        //if boss health is less than or equal to zero, win condition!
+        if (this.bossStats.health <= 0) {
+          //win game and reset level
+
+
+          //clear out arrays to prepare new dungeon
+          this.wallArray = [];
+          this.floorArray = [];
+          this.monsterStats = {};
+
+          gameState.player.health = 100;
+          gameState.player.attack = 10;
+          gameState.player.experience = 0;
+          gameState.player.weapon = 10;
+          gameState.player.dungeonLevel = 1;
+          this.dungeonLevel = 1;
+          gameState.dungeon = this.dungeonGenerator();
+          gameState.player.row = this.playerRow;
+          gameState.player.column = this.playerColumn;
+          canPlayerMove = false;
+        } else {
+          canPlayerMove = false;
+        }
         break;
       default:
         //if something else, do nothing

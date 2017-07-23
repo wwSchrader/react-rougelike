@@ -3,6 +3,10 @@
 
 }
 
+.boss {
+  background-color: darkred;
+}
+
 .wall {
   background-color: grey;
 }
