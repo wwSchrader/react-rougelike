@@ -284,6 +284,7 @@ class App extends Component {
 
   onKeyIsPressed(e) {
     var canPlayerMove = false;
+    var resetGame = false;
     var keyPress = e.key;
     var gameState = JSON.parse(JSON.stringify(this.state));
 
@@ -333,6 +334,12 @@ class App extends Component {
         } else {
           canPlayerMove = false;
         }
+
+        //if health is zero or less, reset game
+        if (gameState.player.health <= 0) {
+            resetGame = true;
+            gameState.lossMessageVisible = true;
+          }
         break;
       case this.weaponTile:
         //increase players weapon stat
@@ -361,26 +368,15 @@ class App extends Component {
         //if boss health is less than or equal to zero, win condition!
         if (this.bossStats.health <= 0) {
           //win game and reset level
-
-
-          //clear out arrays to prepare new dungeon
-          this.wallArray = [];
-          this.floorArray = [];
-          this.monsterStats = {};
-
-          gameState.player.health = 100;
-          gameState.player.attack = 10;
-          gameState.player.experience = 0;
-          gameState.player.weapon = 10;
-          gameState.player.dungeonLevel = 1;
-          this.dungeonLevel = 1;
-          gameState.dungeon = this.dungeonGenerator();
-          gameState.player.row = this.playerRow;
-          gameState.player.column = this.playerColumn;
+          resetGame = true;
           gameState.winMessageVisible = true;
-          canPlayerMove = false;
         } else {
           canPlayerMove = false;
+          //if health is zero or less, reset the game
+          if (gameState.player.health <= 0) {
+            resetGame = true;
+            gameState.lossMessageVisible = true;
+          }
         }
         break;
       default:
@@ -396,6 +392,23 @@ class App extends Component {
         //update player coordinates
         gameState.player.row = rowToMoveTo;
         gameState.player.column = columnToMoveTo;
+    }
+
+    if(resetGame) {
+      //clear out arrays to prepare new dungeon
+          this.wallArray = [];
+          this.floorArray = [];
+          this.monsterStats = {};
+
+          gameState.player.health = 100;
+          gameState.player.attack = 10;
+          gameState.player.experience = 0;
+          gameState.player.weapon = 10;
+          gameState.player.dungeonLevel = 1;
+          this.dungeonLevel = 1;
+          gameState.dungeon = this.dungeonGenerator();
+          gameState.player.row = this.playerRow;
+          gameState.player.column = this.playerColumn;
     }
 
     this.setState(gameState);

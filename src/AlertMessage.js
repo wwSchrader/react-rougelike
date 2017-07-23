@@ -32,12 +32,17 @@ class AlertMessage extends Component {
     render() {
         if (this.state.winMessageVisible) {
             return (
-                <div>
-                    <Alert bsStyle="success" onDismiss={this.handleWinMessageDismiss}>
-                        <h2>Congrats! You won the game. You're a champion!</h2>
-                        <Button onClick={this.handleWinMessageDismiss}>Yup, I'm awesome!</Button>
-                    </Alert>
-                </div>
+                <Alert bsStyle="success" onDismiss={this.handleWinMessageDismiss}>
+                    <h2>Congrats! You won the game. You're a champion!</h2>
+                    <Button onClick={this.handleWinMessageDismiss}>Yup, I'm awesome!</Button>
+                </Alert>
+            );
+        } else if (this.state.lossMessageVisible) {
+            return (
+                <Alert bsStyle="danger" onDismiss={this.handleLossMessageDismiss}>
+                    <h2>Oh no! You died. Better luck next time!</h2>
+                    <Button onClick={this.handleLossMessageDismiss}>I will never give up!</Button>
+                </Alert>
             );
         } else {
             return null;
