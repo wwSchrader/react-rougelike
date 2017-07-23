@@ -21,6 +21,7 @@ class PlayerStats extends Component {
                 <p>Health: {this.state.player.health}</p>
                 <p>Weapon: {this.state.player.weapon}</p>
                 <p>Experience: {this.state.player.experience}</p>
+                <p>Dungeon Level: {this.state.player.dungeonLevel}</p>
             </div>
         );
     }

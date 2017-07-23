@@ -19,6 +19,14 @@
   background-color: blue;
 }
 
+.weapon {
+  background-color: gold;
+}
+
+.portal {
+  background-color: purple;
+}
+
 .tile {
   height: 7px;
   width: 7px;

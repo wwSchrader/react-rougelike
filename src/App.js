@@ -13,6 +13,8 @@ class App extends Component {
     this.playerTile = 'player';
     this.healthTile = 'health';
     this.monsterTile = 'monster';
+    this.weaponTile = 'weapon';
+    this.portalTile = 'portal';
 
     this.dungeonHeight = 50;
     this.dungeonWidth = 50;
@@ -37,7 +39,8 @@ class App extends Component {
         weapon: 10,
         experience: 0,
         row: this.playerRow,
-        column: this.playerColumn
+        column: this.playerColumn,
+        dungeonLevel: 1
       }
     };
 
@@ -46,7 +49,7 @@ class App extends Component {
 
   dungeonGenerator() {
     //create empty dungeon
-    var dungeon = new Array(this.dungeonHeight);
+    let dungeon = new Array(this.dungeonHeight);
     for (var i = 0; i < this.dungeonHeight;) {
       dungeon[i++] = new Array(this.dungeonWidth);
       for(var j = 0; j < this.dungeonWidth;) {
@@ -58,7 +61,7 @@ class App extends Component {
     dungeon = this.createRoom(25, 25, dungeon, null);
 
     //randomly create another set of rooms
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 5; i++) {
       dungeon = this.randomlyGenerateRoom(dungeon);
     }
 
@@ -67,6 +70,27 @@ class App extends Component {
     dungeon = this.generateMonsters(5, dungeon);
 
     dungeon = this.spawnPlayer(dungeon);
+
+    dungeon = this.spawnWeapon(dungeon);
+
+    dungeon = this.spawnPortal(dungeon);
+
+    return dungeon;
+  }
+
+  spawnPortal(dungeon) {
+    let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+    let selectFloorTile = this.floorArray.splice(randomIndex, 1);
+
+    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.portalTile;
+    return dungeon;
+  }
+
+  spawnWeapon(dungeon) {
+    let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
+    let selectFloorTile = this.floorArray.splice(randomIndex, 1);
+
+    dungeon[selectFloorTile[0].row][selectFloorTile[0].column] = this.weaponTile;
 
     return dungeon;
   }
@@ -228,7 +252,7 @@ class App extends Component {
   onKeyIsPressed(e) {
     var canPlayerMove = false;
     var keyPress = e.key;
-    var gameState = Object.assign({}, this.state);
+    var gameState = JSON.parse(JSON.stringify(this.state));
 
     var rowToMoveTo = gameState.player.row;
     var columnToMoveTo = gameState.player.column;
@@ -276,6 +300,23 @@ class App extends Component {
         } else {
           canPlayerMove = false;
         }
+        break;
+      case this.weaponTile:
+        //increase players weapon stat
+        gameState.player.weapon += 10;
+        canPlayerMove = true;
+        break;
+      case this.portalTile:
+        //clear out arrays to prepare new dungeon
+        this.wallArray = [];
+        this.floorArray = [];
+        this.monsterStats = {};
+
+        gameState.dungeon = this.dungeonGenerator();
+        gameState.player.row = this.playerRow;
+        gameState.player.column = this.playerColumn;
+        gameState.player.dungeonLevel += 1;
+        canPlayerMove = false;
         break;
       default:
         //if something else, do nothing

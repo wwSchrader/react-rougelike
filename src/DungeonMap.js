@@ -5,14 +5,15 @@ import './DungeonMap.css';
 class DungeonMap extends Component {
     constructor(props) {
         super(props);
-        console.log=(this.props.dungeonMap);
         this.state = {
             dungeon: this.props.dungeonMap
         };
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState(nextProps.dungeonMap);
+        this.setState({
+            dungeon: nextProps.dungeonMap
+        });
     }
 
     render() {
