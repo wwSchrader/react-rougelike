@@ -90,7 +90,7 @@ class App extends Component {
     let randomIndex = this.getRandomInt(0, this.floorArray.length - 1);
     let selectFloorTile = this.floorArray.splice(randomIndex, 1);
 
-    if (this.dungeonLevel === 2) {
+    if (this.dungeonLevel === 3) {
       while (true) {
         //check adjacent tiles for space for the boss
         if (dungeon[selectFloorTile[0].row + 1][selectFloorTile[0].column] === this.floorTile &&
