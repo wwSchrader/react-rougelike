@@ -1,0 +1,46 @@
+span {
+    height: 7px;
+    width: 7px;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px;
+    display: inline-block;
+    font-size: 0;
+}
+
+.healthStats {
+    background-color: green;
+    float: left;
+    text-align: center;
+}
+
+.weaponStats {
+    background-color: gold;
+    float: left;
+    text-align: center;
+}
+
+.dungeonLevelStats {
+    background-color: purple;
+    float: left;
+    text-align: center;
+}
+
+.experienceStats {
+    background-color: red;
+    float: left;
+    text-align: center;
+}
+
+.statsLine {
+    display: inline-block;
+    min-width: 150px;
+    text-align: center;
+}
+
+.infoBlock {
+    min-width: 400px;
+    text-align: center;
+    vertical-align: middle;
+}
+

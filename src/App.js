@@ -431,7 +431,7 @@ class App extends Component {
     return (
       <div className="App">
         <AlertMessage handleWinAlert={this.handleWinMessageDismiss} handleLossAlert={this.handleLossMessageDismiss} winMessageState={this.state.winMessageVisible} lossMessageState={this.state.lossMessageVisible} />
-        <h1>React Rouglelie Dungeon Crawler</h1>
+        <h1>React Roguelike Dungeon Crawler</h1>
         <h3>Kill the boss at in Level 3 to win the game!</h3>
         <PlayerStats playerStats={this.state.player} />
         <DungeonMap dungeonMap={this.state.dungeon} playerRow={this.state.player.row} playerColumn={this.state.player.column} />
